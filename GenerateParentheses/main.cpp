@@ -17,7 +17,7 @@ int printVector(std::vector<T> v)
 
 int helper(signed char k, std::string str, std::vector<std::string>& result, int L)
 {
-	//std::cout << k << str << L;
+	
 
 	if (str.length() == 2 * n)
 	{
