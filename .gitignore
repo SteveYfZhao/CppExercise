@@ -301,3 +301,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+*.vcxproj
+boost_asio_tutorial/boost_asio_tutorial.vcxproj.filters
+*.sln
+CppExercise/CppExercise.vcxproj.filters
+*.filters
