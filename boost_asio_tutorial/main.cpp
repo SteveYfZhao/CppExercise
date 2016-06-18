@@ -9,14 +9,14 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		if (argc != 2)
+		/*if (argc != 2)
 		{
 			std::cerr << "Usage: client <host>" << std::endl;
 			return 1;
-		}
+		}*/
 		boost::asio::io_service io_service;
 		tcp::resolver resolver(io_service);
-		tcp::resolver::query query(argv[1], "daytime");
+		tcp::resolver::query query("localhost", "13");
 		tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
 
 		tcp::socket socket(io_service);
