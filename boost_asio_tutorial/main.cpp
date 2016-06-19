@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 		}*/
 		boost::asio::io_service io_service;
 		tcp::resolver resolver(io_service);
-		tcp::resolver::query query("localhost", "13");
+		tcp::resolver::query query("localhost", "12280");
 		tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
 
 		tcp::socket socket(io_service);
@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 			size_t len = socket.read_some(boost::asio::buffer(buf), error);
 			if (error == boost::asio::error::eof)
 			{
-				break;
+				//break;
 			}
 			else if (error)
 			{
@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
 			}
 
 			std::cout.write(buf.data(), len);
+			std::cout << std::endl;
 		}
 
 
