@@ -17,6 +17,35 @@ int main()
 	try
 	{
 		boost::asio::io_service io_service;
+		tcp_server server(io_service);
+		io_service.run();
+	}
+	catch (std::exception& e)
+	{
+		std::cerr << e.what() << std::endl;
+	}
+	return 0;
+}
+
+class tcp_server
+{
+public:
+	tcp_server(boost::asio::io_service& io_service)
+		:acceptor_(io_service, tcp::endpoint(tcp::v4(), 13))
+	{
+		start_accept();
+	}
+
+private:
+	void start_accept()
+	{
+		tcp_connection::pointer new_connection = tcp_connection::create(acceptor_.get_io_service());
+	}
+	tcp::acceptor acceptor_;
+}
+
+
+
 		tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), 12280));
 		std::string name; // define name
 		//for (;;)
