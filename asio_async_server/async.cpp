@@ -15,52 +15,7 @@ std::string make_daytime_string()
 	return ctime(&now);
 }
 
-int main()
-{
-	try
-	{
-		boost::asio::io_service io_service;
-		tcp_server server(io_service);
-		io_service.run();
-	}
-	catch (std::exception& e)
-	{
-		std::cerr << e.what() << std::endl;
-	}
-	return 0;
-}
-
-class tcp_server
-{
-public:
-	tcp_server(boost::asio::io_service& io_service)
-		:acceptor_(io_service, tcp::endpoint(tcp::v4(), 13))
-	{
-		start_accept();
-	}
-
-private:
-	void start_accept()
-	{
-		tcp_connection::pointer new_connection = tcp_connection::create(acceptor_.get_io_service());
-
-		acceptor_.async_accept(new_connection->socket(), boost::bind(&tcp_server::handle_accept, this, new_connection, boost::asio::placeholders::error));
-
-	}
-
-	void handle_accept(tcp_connection::pointer new_connection, const boost::system::error_code& error)
-	{
-		if (!error)
-		{
-			new_connection->start();
-		}
-
-		start_accept();
-	}
-	tcp::acceptor acceptor_;
-};
-
-class tcp_connection 
+class tcp_connection
 	: public boost::enable_shared_from_this<tcp_connection>
 {
 public:
@@ -95,32 +50,51 @@ private:
 
 	tcp::socket socket_;
 	std::string message_;
-}
+};
 
-/*tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), 12280));
-std::string name; // define name
-				  //for (;;)
-				  //{
-tcp::socket socket(io_service);
-acceptor.accept(socket);
-
-std::string msg = make_daytime_string();
-boost::system::error_code ignore_error;
-boost::asio::write(socket, boost::asio::buffer(msg), ignore_error);
-
-for (;;)
+class tcp_server
 {
-	std::cin >> name; // read into
-	boost::asio::write(socket, boost::asio::buffer(name), ignore_error);
-}
+public:
+	tcp_server(boost::asio::io_service& io_service)
+		:acceptor_(io_service, tcp::endpoint(tcp::v4(), 13))
+	{
+		start_accept();
+	}
+
+private:
+	void start_accept()
+	{
+		tcp_connection::pointer new_connection = tcp_connection::create(acceptor_.get_io_service());
+
+		acceptor_.async_accept(new_connection->socket(), boost::bind(&tcp_server::handle_accept, this, new_connection, boost::asio::placeholders::error));
+
+	}
+
+	void handle_accept(tcp_connection::pointer new_connection, const boost::system::error_code& error)
+	{
+		if (!error)
+		{
+			new_connection->start();
+		}
+
+		start_accept();
+	}
+	tcp::acceptor acceptor_;
+};
 
 
-//}
 
+int main()
+{
+	try
+	{
+		boost::asio::io_service io_service;
+		tcp_server server(io_service);
+		io_service.run();
 	}
 	catch (std::exception& e)
 	{
 		std::cerr << e.what() << std::endl;
 	}
 	return 0;
-}*/
+}
